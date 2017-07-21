@@ -11,6 +11,8 @@ SUPPORTED_PROTO = {"linux" : ["stdio", "soem"]}
 
 if len(sys.argv) != 3 :
 	print("usage : %s [UPPAAL project file] [Config file]")
+	sys.exit(-1)
+
 projectFile = sys.argv[1]
 configFile = sys.argv[2]
 
