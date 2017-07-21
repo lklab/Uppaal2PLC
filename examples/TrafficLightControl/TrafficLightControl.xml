@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+broadcast chan dataExchanged;
+
+// IO Variables
+bool pButton = false;
+bool eButton = false;
+
+bool pLight = false;
+bool eLight = false;
+
+// env channel
+broadcast chan go;
+broadcast chan stop;
+chan push;
+
+const int WAIT_TIME = 500;
+const int GREEN_TIME = 1500;
+const int PERIOD = 1;</declaration>
+	<template>
+		<name>PLCSystem</name>
+		<declaration>clock tickClock;
+
+int exchangeData()
+{
+    pButton = eButton;
+    eLight = pLight;
+
+    return 0;
+}
+
+int userPeriodicFunc()
+{
+    return 0;
+}</declaration>
+		<location id="id0" x="-340" y="-272">
+			<name x="-382" y="-255">ExchangeStep</name>
+			<committed/>
+		</location>
+		<location id="id1" x="-340" y="-357">
+			<name x="-365" y="-391">WaitStep</name>
+			<label kind="invariant" x="-323" y="-366">tickClock &lt;= PERIOD</label>
+		</location>
+		<init ref="id1"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-484" y="-357">tickClock &gt;= PERIOD</label>
+			<label kind="assignment" x="-484" y="-340">exchangeData(),
+tickClock = 0</label>
+			<nail x="-382" y="-315"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-297" y="-323">dataExchanged!</label>
+			<nail x="-297" y="-315"/>
+		</transition>
+	</template>
+	<template>
+		<name>Controller</name>
+		<declaration>clock x;</declaration>
+		<location id="id2" x="-663" y="-493">
+			<committed/>
+		</location>
+		<location id="id3" x="-663" y="-357">
+			<name x="-688" y="-323">WaitRed</name>
+			<label kind="invariant" x="-722" y="-340">x &lt;= WAIT_TIME</label>
+		</location>
+		<location id="id4" x="-850" y="-357">
+			<name x="-884" y="-323">LightGreen</name>
+			<label kind="invariant" x="-901" y="-340">x &lt;= GREEN_TIME</label>
+		</location>
+		<location id="id5" x="-850" y="-493">
+			<name x="-875" y="-527">LightRed</name>
+		</location>
+		<init ref="id5"/>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-782" y="-527">!pButton</label>
+			<nail x="-756" y="-510"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-714" y="-450">pButton</label>
+			<label kind="assignment" x="-714" y="-433">x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-807" y="-476">dataExchanged?</label>
+			<nail x="-756" y="-476"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-850" y="-450">x &gt;= GREEN_TIME</label>
+			<label kind="assignment" x="-850" y="-433">pLight = false</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-799" y="-408">x &gt;= WAIT_TIME</label>
+			<label kind="assignment" x="-799" y="-391">pLight = true,
+x = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Pedestrian</name>
+		<declaration>clock waiting_green_light;</declaration>
+		<location id="id6" x="-119" y="-195">
+			<name x="-102" y="-204">Going</name>
+		</location>
+		<location id="id7" x="-42" y="-246">
+			<name x="-42" y="-280">Waiting</name>
+		</location>
+		<location id="id8" x="-195" y="-246">
+			<name x="-221" y="-280">Idle</name>
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-178" y="-195">go?</label>
+			<nail x="-195" y="-195"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-17" y="-255">stop?</label>
+			<nail x="-17" y="-263"/>
+			<nail x="-17" y="-229"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-263" y="-255">stop?</label>
+			<nail x="-221" y="-263"/>
+			<nail x="-221" y="-229"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-136" y="-170">push!</label>
+			<nail x="-102" y="-170"/>
+			<nail x="-136" y="-170"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-161" y="-238">stop?</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-102" y="-238">go?</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-59" y="-221">push!</label>
+			<nail x="-25" y="-221"/>
+			<nail x="-59" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-136" y="-289">push!</label>
+			<label kind="assignment" x="-195" y="-272">waiting_green_light = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Light</name>
+		<declaration>clock keep_red_light;</declaration>
+		<location id="id9" x="-68" y="-51">
+			<committed/>
+		</location>
+		<location id="id10" x="-68" y="-136">
+			<committed/>
+		</location>
+		<location id="id11" x="59" y="-93">
+			<name x="42" y="-127">Green</name>
+		</location>
+		<location id="id12" x="-195" y="-93">
+			<name x="-212" y="-76">Red</name>
+		</location>
+		<init ref="id12"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-42" y="-93">eLight</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-136" y="-110">!eLight</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-161" y="-68">!eLight</label>
+			<label kind="synchronisation" x="-161" y="-51">stop!</label>
+			<label kind="assignment" x="-161" y="-34">keep_red_light = 0</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-42" y="-51">dataExchanged?</label>
+			<nail x="59" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-17" y="-136">eLight</label>
+			<label kind="synchronisation" x="-17" y="-153">go!</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-187" y="-161">dataExchanged?</label>
+			<nail x="-195" y="-136"/>
+		</transition>
+	</template>
+	<template>
+		<name>Button</name>
+		<location id="id13" x="161" y="-51">
+			<name x="136" y="-85">Pushed</name>
+		</location>
+		<location id="id14" x="-8" y="-51">
+			<name x="-18" y="-85">Idle</name>
+		</location>
+		<init ref="id14"/>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="212" y="-59">push?</label>
+			<nail x="204" y="-76"/>
+			<nail x="204" y="-25"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="25" y="-24">dataExchanged?</label>
+			<label kind="assignment" x="25" y="-8">eButton = false</label>
+			<nail x="76" y="-25"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="34" y="-110">push?</label>
+			<label kind="assignment" x="34" y="-93">eButton = true</label>
+			<nail x="76" y="-76"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+plcsys = PLCSystem();
+
+controller = Controller();
+pedestrian = Pedestrian();
+light = Light();
+button = Button();
+
+// List one or more processes to be composed into a system.
+system plcsys, controller, pedestrian, light, button;</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] pedestrian.Waiting imply pedestrian.waiting_green_light &lt;= WAIT_TIME + 2 * PERIOD
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] light.Green imply light.keep_red_light &gt;= WAIT_TIME
+			</formula>
+			<comment>
+			</comment>
+		</query>
+	</queries>
+</nta>

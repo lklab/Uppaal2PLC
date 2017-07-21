@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<nta>
+	<platform>
+		<os>linux</os>
+		<protocol>soem</protocol>
+		<period>10000000</period>
+	</platform>
+	<configuration>
+		<task type="Controller" />
+		<io varname="pButton" address="1:0x6000:0x1" type="bool" direction="in" />
+		<io varname="pLight" address="1:0x7010:0x1" type="bool" direction="out" />
+	</configuration>
+</nta>
