@@ -9,9 +9,9 @@ INCLUDE+=-Iiolib/include
 .SUFFIXES:.c.o
 .c.o:
 	$(CC) $(INCLUDE) $(CFLAGS) -o $@ $<
-	$(AR) rc $(LIB_PATH) $@
 
 all: $(OBJS) IOLIB
+	$(AR) rc $(LIB_PATH) $(OBJS)
 
 IOLIB:
 	$(MAKE) -C iolib

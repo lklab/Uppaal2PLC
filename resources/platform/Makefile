@@ -13,6 +13,7 @@ export CFLAGS
 all: $(OS)
 
 LINUX:
+	rm $(LIB_PATH)
 	$(MAKE) -C linux
 
 clean:

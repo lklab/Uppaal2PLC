@@ -7,9 +7,9 @@ SRCS=$(OBJS:.o=.c)
 .SUFFIXES:.c.o
 .c.o:
 	$(CC) $(INCLUDE) $(CFLAGS) -o $@ $<
-	$(AR) rc $(LIB_PATH) $@
 
 all: $(OBJS) $(PROTO)
+	$(AR) rc $(LIB_PATH) $(OBJS)
 
 SOEM:
 	$(MAKE) -C soem
