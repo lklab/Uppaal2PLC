@@ -272,6 +272,39 @@ int io_exchange(void)
 
 int io_cleanup(void)
 {
+	io_value_t* list;
+	io_value_t* tmp;
+	int slave, i;
+
+	/* free pdo mapping lists */
+	for(slave = 1; slave <= slave_num; slave++)
+	{
+		for(i = 1; i <= slave_list[slave].input_list_num; i++)
+			free(slave_list[slave].input_pdo_set_list[i].pdo_mapping_list);
+		for(i = 1; i <= slave_list[slave].output_list_num; i++)
+			free(slave_list[slave].output_pdo_set_list[i].pdo_mapping_list);
+		free(slave_list[slave].input_pdo_set_list);
+		free(slave_list[slave].output_pdo_set_list);
+	}
+	free(slave_list);
+
+	/* free exchange lists */
+	list = output_list;
+	while(list != NULL)
+	{
+		tmp = list -> next;
+		free(list);
+		list = tmp;
+	}
+	list = input_list;
+	while(list != NULL)
+	{
+		tmp = list -> next;
+		free(list);
+		list = tmp;
+	}
+	
+	/* close connection */
 	if(is_connected)
 	{
 		ec_slave[0].state = EC_STATE_INIT;

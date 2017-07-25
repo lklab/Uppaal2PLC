@@ -130,5 +130,23 @@ int io_exchange(void)
 
 int io_cleanup(void)
 {
+	io_value_t* list;
+	io_value_t* tmp;
+
+	list = output_list;
+	while(list != NULL)
+	{
+		tmp = list -> next;
+		free(list);
+		list = tmp;
+	}
+	list = input_list;
+	while(list != NULL)
+	{
+		tmp = list -> next;
+		free(list);
+		list = tmp;
+	}
+	
 	return 0;
 }

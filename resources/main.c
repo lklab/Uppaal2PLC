@@ -18,7 +18,10 @@ int main(void)
 
 	ret = io_init();
 	if(ret < 0)
+	{
+		io_cleanup();
 		os_exit_process(-1);
+	}
 
 	for(i = 0; mapping_list[i].variable != NULL; i++)
 	{

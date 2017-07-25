@@ -26,10 +26,10 @@ all: $(OBJS) PLATFORM_LIB
 	@if [ "$(OS)" = "LINUX" ]; then \
 		if [ "$(PROTO)" = "STDIO" ]; then \
 			$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS) -lrt ; \
-			echo "create PlcApp for lunux & stdio platform" ; \
+			echo "create $(TARGET) for lunux & stdio platform" ; \
 		elif [ "$(PROTO)" = "SOEM" ]; then \
 			$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS) -lpthread -lrt ; \
-			echo "create PlcApp for lunux & soem platform" ; \
+			echo "create $(TARGET) for lunux & soem platform" ; \
 		fi \
 	fi
 
