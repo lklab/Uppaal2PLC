@@ -1,5 +1,5 @@
 # Uppaal2PLC
-Automatic PLC Application Generation Solution from UPPAAL Model.
+Automated PLC Application Generation Solution from UPPAAL Model.
 >You can generate PLC application from verified models by this solution.
 <br>
 
