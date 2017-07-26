@@ -7,7 +7,7 @@
 		<period>10000000</period>
 	</platform>
 	<configuration>
-		<task type="Controller" />
+		<task type="LEDBlink" />
 		<io varname="led0" address="1:0x7010:0x1" type="bool" direction="out" />
 		<io varname="led1" address="1:0x7010:0x2" type="bool" direction="out" />
 		<io varname="led2" address="1:0x7010:0x3" type="bool" direction="out" />
