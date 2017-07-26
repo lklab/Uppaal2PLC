@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+broadcast chan dataExchanged;
+
+int led0 = 1;
+int led1 = 0;
+int led2 = 0;
+int led3 = 0;
+int led4 = 0;
+int led5 = 0;
+int led6 = 0;
+int led7 = 0;</declaration>
+	<template>
+		<name>PLCSystem</name>
+		<declaration>clock tickClock;
+
+int exchangeData()
+{
+    return 0;
+}
+
+int userPeriodicFunc()
+{
+    return 0;
+}</declaration>
+		<location id="id0" x="-340" y="-272">
+			<name x="-382" y="-255">ExchangeStep</name>
+			<committed/>
+		</location>
+		<location id="id1" x="-340" y="-357">
+			<name x="-365" y="-391">WaitStep</name>
+			<label kind="invariant" x="-323" y="-366">tickClock &lt;= 1</label>
+		</location>
+		<init ref="id1"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-484" y="-357">tickClock &gt;= 1</label>
+			<label kind="assignment" x="-484" y="-340">exchangeData(),
+tickClock = 0</label>
+			<nail x="-382" y="-315"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-297" y="-323">dataExchanged!</label>
+			<nail x="-297" y="-315"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">LEDBlink</name>
+		<declaration>// Place local declarations here.
+
+clock x;</declaration>
+		<location id="id2" x="-110" y="-323">
+		</location>
+		<location id="id3" x="-110" y="-204">
+		</location>
+		<location id="id4" x="-110" y="-85">
+		</location>
+		<location id="id5" x="-238" y="-85">
+		</location>
+		<location id="id6" x="-374" y="-85">
+		</location>
+		<location id="id7" x="-374" y="-204">
+		</location>
+		<location id="id8" x="-374" y="-323">
+		</location>
+		<location id="id9" x="-238" y="-323">
+		</location>
+		<init ref="id9"/>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-195" y="-391">x &gt;= 10</label>
+			<label kind="assignment" x="-195" y="-374">led7 = 0,
+led0 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-102" y="-297">x &gt;= 10</label>
+			<label kind="assignment" x="-102" y="-280">led6 = 0,
+led7 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-102" y="-178">x &gt;= 10</label>
+			<label kind="assignment" x="-102" y="-161">led5 = 0,
+led6 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-195" y="-76">x &gt;= 10</label>
+			<label kind="assignment" x="-195" y="-59">led4 = 0,
+led5 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-331" y="-76">x &gt;= 10</label>
+			<label kind="assignment" x="-331" y="-59">led3 = 0,
+led4 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-433" y="-178">x &gt;= 10</label>
+			<label kind="assignment" x="-433" y="-161">led2 = 0,
+led3 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-442" y="-297">x &gt;= 10</label>
+			<label kind="assignment" x="-442" y="-280">led1 = 0,
+led2 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-323" y="-391">x &gt;= 10</label>
+			<label kind="assignment" x="-323" y="-374">led0 = 0,
+led1 = 1,
+x = 0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Process = LEDBlink();
+// List one or more processes to be composed into a system.
+system Process;
+    </system>
+	<queries>
+	</queries>
+</nta>

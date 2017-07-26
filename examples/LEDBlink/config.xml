@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<nta>
+	<platform>
+		<os>linux</os>
+		<protocol>soem</protocol>
+		<period>10000000</period>
+	</platform>
+	<configuration>
+		<task type="Controller" />
+		<io varname="led0" address="1:0x7010:0x1" type="bool" direction="out" />
+		<io varname="led1" address="1:0x7010:0x2" type="bool" direction="out" />
+		<io varname="led2" address="1:0x7010:0x3" type="bool" direction="out" />
+		<io varname="led3" address="1:0x7010:0x4" type="bool" direction="out" />
+		<io varname="led4" address="1:0x7010:0x5" type="bool" direction="out" />
+		<io varname="led5" address="1:0x7010:0x6" type="bool" direction="out" />
+		<io varname="led6" address="1:0x7010:0x7" type="bool" direction="out" />
+		<io varname="led7" address="1:0x7010:0x8" type="bool" direction="out" />
+	</configuration>
+</nta>
