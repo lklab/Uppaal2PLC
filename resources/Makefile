@@ -36,6 +36,9 @@ all: $(OBJS) PLATFORM_LIB
 PLATFORM_LIB:
 	$(MAKE) -C $(PLATFORM)
 
+main.o: model.h main.c
+	$(CC) $(INCLUDE) $(CFLAGS) main.c
+
 clean:
 	$(MAKE) -C $(PLATFORM) clean
 	rm -rf *.o $(TARGET)
