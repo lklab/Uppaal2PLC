@@ -54,11 +54,11 @@ tickClock = 0</label>
 		<declaration>// Place local declarations here.
 
 clock x;</declaration>
-		<location id="id2" x="-110" y="-323">
+		<location id="id2" x="-102" y="-323">
 		</location>
-		<location id="id3" x="-110" y="-204">
+		<location id="id3" x="-102" y="-204">
 		</location>
-		<location id="id4" x="-110" y="-85">
+		<location id="id4" x="-102" y="-85">
 		</location>
 		<location id="id5" x="-238" y="-85">
 		</location>
@@ -74,24 +74,24 @@ clock x;</declaration>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id9"/>
-			<label kind="guard" x="-195" y="-391">x &gt;= 10</label>
-			<label kind="assignment" x="-195" y="-374">led7 = 0,
+			<label kind="guard" x="-187" y="-391">x &gt;= 10</label>
+			<label kind="assignment" x="-187" y="-374">led7 = 0,
 led0 = 1,
 x = 0</label>
 		</transition>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id2"/>
-			<label kind="guard" x="-102" y="-297">x &gt;= 10</label>
-			<label kind="assignment" x="-102" y="-280">led6 = 0,
+			<label kind="guard" x="-94" y="-297">x &gt;= 10</label>
+			<label kind="assignment" x="-94" y="-280">led6 = 0,
 led7 = 1,
 x = 0</label>
 		</transition>
 		<transition>
 			<source ref="id4"/>
 			<target ref="id3"/>
-			<label kind="guard" x="-102" y="-178">x &gt;= 10</label>
-			<label kind="assignment" x="-102" y="-161">led5 = 0,
+			<label kind="guard" x="-94" y="-178">x &gt;= 10</label>
+			<label kind="assignment" x="-94" y="-161">led5 = 0,
 led6 = 1,
 x = 0</label>
 		</transition>
@@ -122,8 +122,8 @@ x = 0</label>
 		<transition>
 			<source ref="id8"/>
 			<target ref="id7"/>
-			<label kind="guard" x="-442" y="-297">x &gt;= 10</label>
-			<label kind="assignment" x="-442" y="-280">led1 = 0,
+			<label kind="guard" x="-433" y="-297">x &gt;= 10</label>
+			<label kind="assignment" x="-433" y="-280">led1 = 0,
 led2 = 1,
 x = 0</label>
 		</transition>
