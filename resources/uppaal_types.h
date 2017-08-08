@@ -22,7 +22,7 @@ typedef struct Location Location;
 typedef struct Transition Transition;
 typedef struct Channel Channel;
 
-typedef int (*finvarient_t)(void*, int);
+typedef int (*finvariant_t)(void*, int);
 typedef int (*fguard_t)(void*);
 typedef void (*fupdate_t)(void*);
 
@@ -47,7 +47,7 @@ struct Location
 {
 	Transition** transitions;
 	int mode;
-	finvarient_t invarient;
+	finvariant_t invariant;
 };
 
 struct Transition
