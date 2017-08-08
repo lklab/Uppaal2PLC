@@ -60,8 +60,8 @@ if os.uname()[0] == "Linux" :
 		print("See resources directory for manual build.")
 	else :
 		shutil.move(os.path.join(resourceDirectory, appName), os.path.join(rootDirectory, appName))
-		os.remove(modelSourceFilePath)
-		os.remove(modelHeaderFilePath)
+#		os.remove(modelSourceFilePath)
+#		os.remove(modelHeaderFilePath)
 #		os.system("make clean")
 		os.chdir(rootDirectory)
 		print("Automatic build is completed.")

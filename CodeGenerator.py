@@ -346,7 +346,9 @@ def generateContextDeclaration(template, task) :
 	task["codeName"] = codeName
 	code += "Template " + codeName + " = {\n\t"
 	code += "&" + template["name"] + "_context_" + str(task["id"]) + ",\n\t"
-	code += "&" + template["locations"][template["initial"]]["codeName"] + ",\n\t0\n};\n"
+	code += "NULL,\n\t"
+	code += "sizeof(" + template["name"] + "Context),\n\t"
+	code += "&" + template["locations"][template["initial"]]["codeName"] + ",\n\tNULL\n};\n"
 	return code
 
 def generateSystemCode(system, taskList) :
@@ -362,9 +364,14 @@ def generateSystemCode(system, taskList) :
 				code += var["initial"] + ",\n\t"
 			else :
 				code += "0,\n\t"
-	code = code[:-3] + "\n};\n"
+	code = code[:-3] + "\n};\n\n"
 
-	code += "System system = {(Template**)&task_list, 0LL};\n"
+	code += "System system = {\n\t"
+	code += "&system_context,\n\t"
+	code += "NULL,\n\t"
+	code += "sizeof(SystemContext),\n\t"
+	code += "(Template**)&task_list,\n\t"
+	code += "0LL\n};\n\n"
 	return code
 
 def generateMappingCode(ioList) :

@@ -3,5 +3,6 @@
 
 int uppaal_init(void);
 int uppaal_step(void);
+int uppaal_cleanup(void);
 
 #endif

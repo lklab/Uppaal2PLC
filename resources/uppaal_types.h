@@ -31,6 +31,10 @@ typedef unsigned long long Clock;
 
 struct System
 {
+	void* context;
+	void* context_backup;
+	int context_size;
+
 	Template** tasks;
 	Clock system_clock;
 };
@@ -38,9 +42,11 @@ struct System
 struct Template
 {
 	void* context;
+	void* context_backup;
+	int context_size;
 	Location* current;
 
-	int stepped;
+	void* ready;
 };
 
 struct Location

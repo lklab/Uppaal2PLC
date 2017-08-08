@@ -52,6 +52,7 @@ void task_proc(void)
 	{
 		task_stop(&task);
 		io_cleanup();
+		uppaal_cleanup();
 		os_exit_process(-1);
 	}
 	
@@ -62,5 +63,6 @@ void interrupt_handler(void)
 {
 	task_stop(&task);
 	io_cleanup();
+	uppaal_cleanup();
 	os_exit_process(0);
 }
