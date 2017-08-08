@@ -1,6 +1,8 @@
 #include "uppaal_types.h"
 #include "model.h"
 
+static int check_invariant(Template* task, Transition* transition);
+
 static Transition* find_valid_transition(Template* task);
 static int can_take_transition(Template* task, Transition* transition);
 static void take_transition(Template* task, Transition* transition);
@@ -28,6 +30,11 @@ int uppaal_step(void)
 	system.system_clock++;
 
 	return 0;
+}
+
+static int check_invariant(Template* task, Transition* transition)
+{
+	;
 }
 
 static Transition* find_valid_transition(Template* task)
