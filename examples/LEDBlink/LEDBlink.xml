@@ -13,7 +13,7 @@ int led5 = 0;
 int led6 = 0;
 int led7 = 0;</declaration>
 	<template>
-		<name>PLCSystem</name>
+		<name>PLCPlatform</name>
 		<declaration>clock tickClock;
 
 int exchangeData()

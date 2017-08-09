@@ -16,7 +16,7 @@
 #define true 1
 #define false 0
 
-typedef struct System System;
+typedef struct Program Program;
 typedef struct Template Template;
 typedef struct Location Location;
 typedef struct Transition Transition;
@@ -29,24 +29,24 @@ typedef void (*fupdate_t)(void*);
 #define bool int
 typedef unsigned long long Clock;
 
-struct System
+struct Program
 {
 	void* context;
 	void* context_backup;
-	int context_size;
+	unsigned int context_size;
 
 	Template** tasks;
-	Clock system_clock;
+	Clock program_clock;
 };
 
 struct Template
 {
 	void* context;
 	void* context_backup;
-	int context_size;
+	unsigned int context_size;
 	Location* current;
 
-	void* ready;
+	Transition* ready;
 };
 
 struct Location
@@ -69,8 +69,6 @@ struct Transition
 struct Channel
 {
 	int mode;
-	int send_ready;
-	int recv_ready;
 };
 
 #endif

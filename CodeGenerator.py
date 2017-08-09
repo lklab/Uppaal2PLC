@@ -25,7 +25,8 @@ typedef struct MappingInfo
 int exchangeData();
 int userPeriodicFunc();
 
-extern System system;
+extern Program program;
+extern Channel* data_exchanged;
 extern MappingInfo mapping_list[];
 
 #define CHANNEL_NUM %(channelNum)s
@@ -38,9 +39,9 @@ extern Channel* channel_list[CHANNEL_NUM];
 
 	gcodeHeader = """#include "model.h"
 
-#define GET_CLOCK(clock) (system.system_clock - (clock))
-#define TEST_CLOCK(clock) (system.system_clock - (clock) + 1LL)
-#define SET_CLOCK(clock, value) do { clock = system.system_clock - value; } while(0)
+#define GET_CLOCK(clock) (program.program_clock - (clock))
+#define TEST_CLOCK(clock) (program.program_clock - (clock) + 1LL)
+#define SET_CLOCK(clock, value) do { clock = program.program_clock - value; } while(0)
 
 """
 
@@ -103,10 +104,10 @@ extern Channel* channel_list[CHANNEL_NUM];
 				taskId = taskId + 1
 				break
 
-	# generate system code
-	gcodeContextDeclaration += generateSystemCode(system, configData["taskList"])
+	# generate program code
+	gcodeContextDeclaration += generateProgramCode(system, configData["taskList"])
 	gcodeMappingDeclaration += generateMappingCode(configData["ioList"])
-	gcodeFunctionDeclaration += generateSystemFunction(system, configData["ioList"])
+	gcodeFunctionDeclaration += generateProgramFunction(system, configData["ioList"])
 	headerCode = headerCode%generateHeaderCode(configData)
 
 	modelCode = gcodeHeader + \
@@ -139,7 +140,7 @@ def generateContextStruct(context) :
 
 def generateFunctionPrototype(context) :
 	code = ""
-	if context["name"] == "System" :
+	if context["name"] == "Program" :
 		for func in context["functions"] :
 			codeName = func["return"] + " " + func["name"] + "("
 			comma = False
@@ -163,25 +164,28 @@ def generateFunctionPrototype(context) :
 	return code
 
 def generateChannelDeclaration(system) :
-	defCode = ""
+	defCode = "\n"
+	# TODO : list code is unused
 	listCode = "Channel* channel_list[CHANNEL_NUM] = { \n\t"
+	dataExRefCode = "Channel* data_exchanged = &chan_%s;\n\n"
 
 	for var in system["variables"] :
 		if var["type"] == "chan" :
 			defCode += "Channel chan_" + var["name"] + " = {\n\t"
 			listCode += "&chan_" + var["name"] + ",\n\t"
 			if var["name"] == "dataExchanged" :
-				defCode += "CHANNEL_DATAEXCHANGED,\n\t"
+				defCode += "CHANNEL_DATAEXCHANGED"
+				dataExRefCode = dataExRefCode%var["name"]
 			elif var["attribute"] == "urgent" :
-				defCode += "CHANNEL_URGENT,\n\t"
+				defCode += "CHANNEL_URGENT"
 			elif var["attribute"] == "broadcast" :
-				defCode += "CHANNEL_BROADCAST,\n\t"
+				defCode += "CHANNEL_BROADCAST"
 			else :
-				defCode += "CHANNEL_NORMAL,\n\t"
-			defCode += "0,\n\t0\n};\n"
+				defCode += "CHANNEL_NORMAL"
+			defCode += "\n};\n"
 	listCode = listCode[:-3] + "\n};\n"
 
-	return defCode + listCode
+	return defCode + listCode + dataExRefCode
 
 def generateFunctionDeclaration(context) :
 	code = ""
@@ -351,13 +355,13 @@ def generateContextDeclaration(template, task) :
 	code += "&" + template["locations"][template["initial"]]["codeName"] + ",\n\tNULL\n};\n"
 	return code
 
-def generateSystemCode(system, taskList) :
+def generateProgramCode(system, taskList) :
 	code = "Template* task_list[] = {\n\t"
 	for task in taskList :
 		code += "&" + task["codeName"] + ",\n\t"
 	code += "NULL\n};\n"
 
-	code += "SystemContext system_context = { \n\t"
+	code += "ProgramContext program_context = { \n\t"
 	for var in system["variables"] :
 		if var["type"] != "chan" :
 			if var["initial"] :
@@ -366,10 +370,10 @@ def generateSystemCode(system, taskList) :
 				code += "0,\n\t"
 	code = code[:-3] + "\n};\n\n"
 
-	code += "System system = {\n\t"
-	code += "&system_context,\n\t"
+	code += "Program program = {\n\t"
+	code += "&program_context,\n\t"
 	code += "NULL,\n\t"
-	code += "sizeof(SystemContext),\n\t"
+	code += "sizeof(ProgramContext),\n\t"
 	code += "(Template**)&task_list,\n\t"
 	code += "0LL\n};\n\n"
 	return code
@@ -377,8 +381,8 @@ def generateSystemCode(system, taskList) :
 def generateMappingCode(ioList) :
 	code = "MappingInfo mapping_list[] = {\n"
 	for var in ioList :
-		code += "\t{&(system_context.var_" + var["varname"] + "), "
-		code += "sizeof(system_context.var_" + var["varname"] + "), "
+		code += "\t{&(program_context.var_" + var["varname"] + "), "
+		code += "sizeof(program_context.var_" + var["varname"] + "), "
 		code += "\"" + var["address"] + "\", "
 		if var["direction"] == "out" :
 			code += "0},\n"
@@ -387,10 +391,10 @@ def generateMappingCode(ioList) :
 	code += "\t{NULL, 0, NULL, -1}\n};\n"
 	return code
 
-def generateSystemFunction(system, ioList) :
+def generateProgramFunction(system, ioList) :
 	code = "int userPeriodicFunc()\n{\n"
 	for template in system["templates"] :
-		if template["name"] == "PLCSystem" :
+		if template["name"] == "PLCPlatform" :
 			for func in template["functions"] :
 				if func["name"] == "userPeriodicFunc" :
 					for c in func["code"] :
@@ -426,11 +430,11 @@ def generateCodeLineWhetherUsetc(context, text) :
 	usetc = False
 
 	for t in text :
-		if t in variableNameList["System"] :
+		if t in variableNameList["Program"] :
 			if commaReady :
 				code += ", "
 				commaReady = False
-			code += "system_context.var_" + t + " "
+			code += "program_context.var_" + t + " "
 		elif variableNameList.get(context["name"]) and t in variableNameList[context["name"]] :
 			if commaReady :
 				code += ", "
@@ -438,17 +442,17 @@ def generateCodeLineWhetherUsetc(context, text) :
 			code += "tc -> var_" + t + " "
 			usetc = True
 
-		elif t in clockNameList["System"] :
-			backup = code + "system_context.var_" + t
+		elif t in clockNameList["Program"] :
+			backup = code + "program_context.var_" + t
 			setclockReady = True
-			code += "GET_CLOCK( system_context.var_" + t + " ) "
+			code += "GET_CLOCK( program_context.var_" + t + " ) "
 		elif clockNameList.get(context["name"]) and t in clockNameList[context["name"]] :
 			backup = code + "tc -> var_" + t
 			setclockReady = True
 			code += "GET_CLOCK( tc -> var_" + t + " ) "
 			usetc = True
 
-		elif t in functionNameList["System"] :
+		elif t in functionNameList["Program"] :
 			code += t + " "
 		elif functionNameList.get(context["name"]) and t in functionNameList[context["name"]] :
 			code += context["name"] + "_" + t

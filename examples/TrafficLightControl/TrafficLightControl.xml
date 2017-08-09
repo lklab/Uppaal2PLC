@@ -20,7 +20,7 @@ const int WAIT_TIME = 500;
 const int GREEN_TIME = 1500;
 const int PERIOD = 1;</declaration>
 	<template>
-		<name>PLCSystem</name>
+		<name>PLCPlatform</name>
 		<declaration>clock tickClock;
 
 int exchangeData()
@@ -257,7 +257,7 @@ x = 0</label>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
-plcsys = PLCSystem();
+plcplat = PLCPlatform();
 
 controller = Controller();
 pedestrian = Pedestrian();
@@ -265,7 +265,7 @@ light = Light();
 button = Button();
 
 // List one or more processes to be composed into a system.
-system plcsys, controller, pedestrian, light, button;</system>
+system plcplat, controller, pedestrian, light, button;</system>
 	<queries>
 		<query>
 			<formula>A[] not deadlock

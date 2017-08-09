@@ -21,5 +21,8 @@ int io_cleanup(void);
 
 int os_register_interrupt_handler(void (*handler)(void));
 void os_exit_process(int value);
+void* os_memcpy(void *s1, const void *s2, unsigned int n);
+void* os_malloc(unsigned int size);
+void os_free(void *ptr);
 
 #endif

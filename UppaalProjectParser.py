@@ -6,7 +6,7 @@ def parseUppaalProject(projectFile) :
 	root = project.getroot()
 
 	system = {}
-	system["name"] = "System"
+	system["name"] = "Program"
 	system["variables"] = None
 	system["functions"] = None
 	system["templates"] = []

@@ -7,8 +7,9 @@
 #define PERIOD 10000000LL // 10ms
 #endif
 
-void task_proc(void);
-void interrupt_handler(void);
+static void task_proc(void);
+static void interrupt_handler(void);
+static void cleanup_and_exit(int value);
 
 static task_t task;
 
@@ -43,26 +44,23 @@ int main(void)
 	return 0;
 }
 
-void task_proc(void)
+static void task_proc(void)
 {
-	int ret;
-
-	ret = io_exchange();
-	if(ret < 0)
-	{
-		task_stop(&task);
-		io_cleanup();
-		uppaal_cleanup();
-		os_exit_process(-1);
-	}
-	
-	uppaal_step();
+	if(io_exchange() < 0)
+		cleanup_and_exit(-1);
+	if(uppaal_step() < 0)
+		cleanup_and_exit(-1);
 }
 
-void interrupt_handler(void)
+static void interrupt_handler(void)
+{
+	cleanup_and_exit(0);
+}
+
+static void cleanup_and_exit(int value)
 {
 	task_stop(&task);
 	io_cleanup();
 	uppaal_cleanup();
-	os_exit_process(0);
+	os_exit_process(value);
 }
