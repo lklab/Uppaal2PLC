@@ -9,6 +9,7 @@ static int normal_location_processing();
 static int take_vaild_transition(Template* task);
 
 static int check_and_take_broadcast_channel(Template* send_task, Transition* send_transition);
+static int find_sending_broadcast_and_take(Template* receive_task, Transition* receive_transition);
 static int check_and_take_normal_channel(Template* send_task, Transition* send_transition);
 static int check_invariant_and_take_if_true(Template* task, Transition* transition);
 
@@ -16,7 +17,7 @@ static int backup_context_and_take_update(Template* task, Transition* transition
 static int restore_context(Template* task, Transition* transition, int restore_program_context);
 
 static int check_guard(Template* task, Transition* transition);
-static int check_validation_for_next_cycle();
+static int check_validation_for_next_period();
 
 int uppaal_init(void)
 {
@@ -45,7 +46,7 @@ int uppaal_step(void)
 	}
 	while(normal_location_processing());
 
-	if(!check_validation_for_next_cycle())
+	if(!check_validation_for_next_period())
 		return -1; /* deadlock condition */
 
 	program.program_clock++;
@@ -124,12 +125,26 @@ static int take_vaild_transition(Template* task)
 		if(!check_guard(task, transition))
 			continue;
 
-		if(transition -> chan_in)
+		if(transition -> chan_in != NULL)
+		{
+			switch(transition -> chan_in -> mode)
+			{
+				case CHANNEL_NORMAL :
+				case CHANNEL_URGENT :
+					if(check_and_take_normal_channel(task, transition))
+						return 1;
+					break;
+				case CHANNEL_BROADCAST :
+					if(find_sending_broadcast_and_take(task, transition))
+						return 1;
+					break;
+				default :
+					break;
+			}
 			continue;
-		// TODO : for committed location, chan_in that can be enable by normal channel
-		// must be checked
+		}
 
-		if(transition -> chan_out)
+		if(transition -> chan_out != NULL)
 		{
 			switch(transition -> chan_out -> mode)
 			{
@@ -295,47 +310,110 @@ static int check_and_take_broadcast_channel(Template* send_task, Transition* sen
 	}*/
 }
 
-static int check_and_take_normal_channel(Template* send_task, Transition* send_transition)
+static int find_sending_broadcast_and_take(Template* receive_task, Transition* receive_transition)
 {
-	int i, j, k;
-	int invariant_result;
+	int i, j;
 
 	Template* task;
 	Transition* transition;
-	Channel* send_channel;
+	Channel* receive_channel;
 
-	finvariant_t invariant;
-
-	send_channel = send_transition -> chan_out;
-	if(send_channel == NULL)
+	if(!check_guard(receive_task, receive_transition))
 		return 0;
-	if(!check_guard(send_task, send_transition))
+	receive_channel = receive_transition -> chan_in;
+	if(receive_channel == NULL)
 		return 0;
 
 	for(i = 0; program.tasks[i] != NULL; i++)
 	{
 		task = program.tasks[i];
-		if(task == send_task)
+		if(task == receive_task)
 			continue;
 
 		for(j = 0; task -> current -> transitions[j] != NULL; j++)
 		{
 			transition = task -> current -> transitions[j];
-			if(transition -> chan_in == send_channel)
+			if(transition -> chan_out == receive_channel)
+			{
+				if(check_and_take_broadcast_channel(task, transition))
+					return 1;
+				else
+					continue;
+			}
+		}
+	}
+
+	return 0;
+}
+
+static int check_and_take_normal_channel(Template* ref_task, Transition* ref_transition)
+{
+	int i, j, k;
+	int invariant_result;
+	int ref_invariant_result = 1;
+	int find_send;
+
+	Template* task;
+	Transition* transition;
+	Template** send_task;
+	Transition** send_transition;
+	Template** receive_task;
+	Transition** receive_transition;
+	Channel* ref_channel;
+
+	finvariant_t invariant;
+
+	if(!check_guard(ref_task, ref_transition))
+		return 0;
+
+	if(ref_transition -> chan_in != NULL)
+	{
+		ref_channel = ref_transition -> chan_in;
+		send_task = &task;
+		send_transition = &transition;
+		receive_task = &ref_task;
+		receive_transition = &ref_transition;
+		find_send = 1;
+	}
+	else if(ref_transition -> chan_out != NULL)
+	{
+		ref_channel = ref_transition -> chan_out;
+		send_task = &ref_task;
+		send_transition = &ref_transition;
+		receive_task = &task;
+		receive_transition = &transition;
+		find_send = 0;
+	}
+	else
+		return 0;
+
+	if(ref_transition -> update == NULL)
+	{
+		invariant = ref_transition -> target -> invariant;
+		if(invariant != NULL && !invariant(ref_task -> context, 0))
+			ref_invariant_result = 0;
+	}
+
+	for(i = 0; program.tasks[i] != NULL; i++)
+	{
+		task = program.tasks[i];
+		if(task == ref_task)
+			continue;
+
+		for(j = 0; task -> current -> transitions[j] != NULL; j++)
+		{
+			transition = task -> current -> transitions[j];
+
+			if((find_send && transition -> chan_out == ref_channel) ||
+				(!find_send && transition -> chan_in == ref_channel))
 			{
 				/* guard check */
 				if(!check_guard(task, transition))
 					continue;
 
 				/* if there is no update, check only invariant in the next location */
-				if(send_transition -> update == NULL &&
-					transition -> update == NULL)
+				if(!ref_invariant_result && transition -> update == NULL)
 				{
-					/* TODO : this code can be improved */
-					invariant = send_transition -> target -> invariant;
-					if(invariant != NULL && !invariant(send_task -> context, 0))
-						continue;
-
 					invariant = transition -> target -> invariant;
 					if(invariant != NULL && !invariant(task -> context, 0))
 						continue;
@@ -343,15 +421,15 @@ static int check_and_take_normal_channel(Template* send_task, Transition* send_t
 
 				/* backup context and take update for invariant check*/
 				os_memcpy(program.context_backup, program.context, program.context_size);
-				backup_context_and_take_update(send_task, send_transition, 0);
-				backup_context_and_take_update(task, transition, 0);
+				backup_context_and_take_update(*send_task, *send_transition, 0);
+				backup_context_and_take_update(*receive_task, *receive_transition, 0);
 
 				/* invariant check */
 				invariant_result = 1;
 				for(k = 0; program.tasks[k] != NULL; k++)
 				{
-					if(program.tasks[k] == send_task)
-						invariant = send_transition -> target -> invariant;
+					if(program.tasks[k] == ref_task)
+						invariant = ref_transition -> target -> invariant;
 					else if(program.tasks[k] == task)
 						invariant = transition -> target -> invariant;
 					else
@@ -366,15 +444,15 @@ static int check_and_take_normal_channel(Template* send_task, Transition* send_t
 
 				if(invariant_result) /* take transtion if invariant is true */
 				{
-					send_task -> current = send_transition -> target;
+					ref_task -> current = ref_transition -> target;
 					task -> current = transition -> target;
 					return 1;
 				}
 				else /* restore context if invariant is false */
 				{
 					os_memcpy(program.context, program.context_backup, program.context_size);
-					restore_context(send_task, send_transition, 0);
-					restore_context(task, transition, 0);
+					restore_context(*send_task, *send_transition, 0);
+					restore_context(*receive_task, *receive_transition, 0);
 					continue;
 				}
 			}
@@ -407,7 +485,7 @@ static int check_invariant_and_take_if_true(Template* task, Transition* transiti
 			}
 		}
 
-		task -> current = tarnsition -> target;
+		task -> current = transition -> target;
 		return 1;
 	}
 	else
@@ -416,7 +494,7 @@ static int check_invariant_and_take_if_true(Template* task, Transition* transiti
 		invariant = transition -> target -> invariant;
 		if(invariant == NULL || invariant(task -> context, 0))
 		{
-			task -> current = tarnsition -> target;
+			task -> current = transition -> target;
 			return 1;
 		}
 		else
@@ -459,7 +537,7 @@ static int check_guard(Template* task, Transition* transition)
 		return 0;
 }
 
-static int check_validation_for_next_cycle()
+static int check_validation_for_next_period()
 {
 	int i, j;
 	Template* task;
@@ -471,14 +549,6 @@ static int check_validation_for_next_cycle()
 		if(task -> current -> mode == LOCATION_COMMITTED ||
 			task -> current -> mode == LOCATION_URGENT)
 			return 0;
-
-		for(j = 0; task -> current -> transitions[j] != NULL; j++)
-		{
-			channel = task -> current -> transitions[j] -> chan_out;
-			// TODO : should check chan in??
-			if(channel != NULL && channel -> mode == CHANNEL_URGENT)
-				return 0;
-		}
 
 		if(task -> current -> invariant != NULL)
 		{
