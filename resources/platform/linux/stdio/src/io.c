@@ -77,15 +77,15 @@ int io_exchange(void)
 		switch(list -> size)
 		{
 		case 1 :
-			printf("output value of [%s] : %d", list -> name,
+			printf("output value of [%s] : %d\n", list -> name,
 				*((char*)(list -> variable)));
 			break;
 		case 2 :
-			printf("output value of [%s] : %d", list -> name,
+			printf("output value of [%s] : %d\n", list -> name,
 				*((short*)(list -> variable)));
 			break;
 		case 4 :
-			printf("output value of [%s] : %d", list -> name,
+			printf("output value of [%s] : %d\n", list -> name,
 				*((int*)(list -> variable)));
 			break;
 		}

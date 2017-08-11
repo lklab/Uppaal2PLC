@@ -177,8 +177,8 @@ static int check_and_take_broadcast_channel(Template* send_task, Transition* sen
 	/* 
 	 * WARINING : Current code can behave differently from UPPAAL, when there
 	 * are two or more transitions that receive broadcast channels in the
-	 * current location of a task and the invariant results can vary depending
-	 * on which transition is selected.
+	 * current location of any task and the invariant results can vary
+	 * depending on which transition is selected.
 	 *
 	 * It is recommended to avoid receive broadcast channels for two or more
 	 * transitions that are not determined by guard at any location.
@@ -256,7 +256,7 @@ static int check_and_take_broadcast_channel(Template* send_task, Transition* sen
 			invariant = task -> ready -> target -> invariant;
 		else
 		{
-			if(!is_data_exchanged && task == send_task)
+			if(!is_data_exchanged && (task == send_task))
 				invariant = send_transition -> target -> invariant;
 			else
 				invariant = task -> current -> invariant;
@@ -290,9 +290,8 @@ static int check_and_take_broadcast_channel(Template* send_task, Transition* sen
 		for(i = 0; program.tasks[i] != NULL; i++)
 		{
 			task = program.tasks[i];
-			if(task -> ready == NULL)
-				continue;
-			restore_context(task, task -> ready, 0);
+			if(task -> ready != NULL)
+				restore_context(task, task -> ready, 0);
 		}
 	}
 
@@ -404,8 +403,8 @@ static int check_and_take_normal_channel(Template* ref_task, Transition* ref_tra
 		{
 			transition = task -> current -> transitions[j];
 
-			if((find_send && transition -> chan_out == ref_channel) ||
-				(!find_send && transition -> chan_in == ref_channel))
+			if((find_send && (transition -> chan_out == ref_channel)) ||
+				(!find_send && (transition -> chan_in == ref_channel)))
 			{
 				/* guard check */
 				if(!check_guard(task, transition))

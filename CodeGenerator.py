@@ -1,13 +1,11 @@
 variableNameList = {}
 clockNameList = {}
 functionNameList = {}
-channelNameList = []
 
 def generateCode(system, configData) :
 	global variableNameList
 	global clockNameList
 	global functionNameList
-	global channelNameList
 
 	headerCode = """#ifndef _MODEL_H
 #define _MODEL_H
@@ -28,9 +26,6 @@ int userPeriodicFunc();
 extern Program program;
 extern Channel* data_exchanged;
 extern MappingInfo mapping_list[];
-
-#define CHANNEL_NUM %(channelNum)s
-extern Channel* channel_list[CHANNEL_NUM];
 
 #define PERIOD %(period)sLL
 
@@ -72,7 +67,6 @@ extern Channel* channel_list[CHANNEL_NUM];
 				clockNameList[template["name"]] = [var["name"] for var in template["variables"] if var["type"] == "clock"]
 			if template["functions"] :
 				functionNameList[template["name"]] = [func["name"] for func in template["functions"]]
-	channelNameList = [var["name"] for var in system["variables"] if var["type"] == "chan"]
 
 	# generate global variale, function code
 	gcodeContextStruct += generateContextStruct(system)
@@ -165,14 +159,11 @@ def generateFunctionPrototype(context) :
 
 def generateChannelDeclaration(system) :
 	defCode = "\n"
-	# TODO : list code is unused
-	listCode = "Channel* channel_list[CHANNEL_NUM] = { \n\t"
 	dataExRefCode = "Channel* data_exchanged = &chan_%s;\n\n"
 
 	for var in system["variables"] :
 		if var["type"] == "chan" :
 			defCode += "Channel chan_" + var["name"] + " = {\n\t"
-			listCode += "&chan_" + var["name"] + ",\n\t"
 			if var["name"] == "dataExchanged" :
 				defCode += "CHANNEL_DATAEXCHANGED"
 				dataExRefCode = dataExRefCode%var["name"]
@@ -183,9 +174,8 @@ def generateChannelDeclaration(system) :
 			else :
 				defCode += "CHANNEL_NORMAL"
 			defCode += "\n};\n"
-	listCode = listCode[:-3] + "\n};\n"
 
-	return defCode + listCode + dataExRefCode
+	return defCode + dataExRefCode
 
 def generateFunctionDeclaration(context) :
 	code = ""
@@ -404,12 +394,8 @@ def generateProgramFunction(system, ioList) :
 	return code
 
 def generateHeaderCode(configData) :
-	global channelNameList
-
 	code = {}
-	code["channelNum"] = str(len(channelNameList))
 	code["period"] = configData["period"]
-
 	return code
 
 def generateCodeLine(context, text) :
