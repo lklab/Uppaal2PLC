@@ -2,8 +2,6 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
 	<declaration>// Place global declarations here.
-broadcast chan dataExchanged;
-
 int led0 = 1;
 int led1 = 0;
 int led2 = 0;
@@ -12,43 +10,6 @@ int led4 = 0;
 int led5 = 0;
 int led6 = 0;
 int led7 = 0;</declaration>
-	<template>
-		<name>PLCPlatform</name>
-		<declaration>clock tickClock;
-
-int exchangeData()
-{
-    return 0;
-}
-
-int userPeriodicFunc()
-{
-    return 0;
-}</declaration>
-		<location id="id0" x="-340" y="-272">
-			<name x="-382" y="-255">ExchangeStep</name>
-			<committed/>
-		</location>
-		<location id="id1" x="-340" y="-357">
-			<name x="-365" y="-391">WaitStep</name>
-			<label kind="invariant" x="-323" y="-366">tickClock &lt;= 1</label>
-		</location>
-		<init ref="id1"/>
-		<transition>
-			<source ref="id1"/>
-			<target ref="id0"/>
-			<label kind="guard" x="-484" y="-357">tickClock &gt;= 1</label>
-			<label kind="assignment" x="-484" y="-340">exchangeData(),
-tickClock = 0</label>
-			<nail x="-382" y="-315"/>
-		</transition>
-		<transition>
-			<source ref="id0"/>
-			<target ref="id1"/>
-			<label kind="synchronisation" x="-297" y="-323">dataExchanged!</label>
-			<nail x="-297" y="-315"/>
-		</transition>
-	</template>
 	<template>
 		<name x="5" y="5">LEDBlink</name>
 		<declaration>// Place local declarations here.

@@ -158,16 +158,16 @@ def generateFunctionPrototype(context) :
 	return code
 
 def generateChannelDeclaration(system) :
-	defCode = "\n"
-	dataExRefCode = "Channel* data_exchanged = &chan_%s;\n\n"
+	defCode = "Channel chan_dataExchanged = {\n\tCHANNEL_DATAEXCHANGED\n};\n"
+	dataExRefCode = "Channel* data_exchanged = &chan_dataExchanged;\n\n"
 
 	for var in system["variables"] :
 		if var["type"] == "chan" :
-			defCode += "Channel chan_" + var["name"] + " = {\n\t"
 			if var["name"] == "dataExchanged" :
-				defCode += "CHANNEL_DATAEXCHANGED"
-				dataExRefCode = dataExRefCode%var["name"]
-			elif var["attribute"] == "urgent" :
+				continue
+				
+			defCode += "Channel chan_" + var["name"] + " = {\n\t"
+			if var["attribute"] == "urgent" :
 				defCode += "CHANNEL_URGENT"
 			elif var["attribute"] == "broadcast" :
 				defCode += "CHANNEL_BROADCAST"
@@ -389,7 +389,7 @@ def generateProgramFunction(system, ioList) :
 				if func["name"] == "userPeriodicFunc" :
 					for c in func["code"] :
 						code += generateCodeLine(template, c) + "\n"
-					code += "}\n"
+	code += "}\n"
 
 	return code
 
