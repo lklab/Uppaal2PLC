@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+int led0 = 1;
+int led1 = 1;
+int led2 = 1;
+int led3 = 1;
+int led4 = 1;
+int led5 = 1;
+int led6 = 1;
+int led7 = 1;
+
+int sw0 = 0;
+int sw1 = 0;
+int sw2 = 0;
+int sw3 = 0;
+int sw4 = 0;
+int sw5 = 0;
+int sw6 = 0;
+int sw7 = 0;
+
+broadcast chan toggleSW0;
+broadcast chan toggleSW1;
+broadcast chan toggleSW2;
+broadcast chan toggleSW3;
+broadcast chan toggleSW4;
+broadcast chan toggleSW5;
+broadcast chan toggleSW6;
+broadcast chan toggleSW7;
+
+broadcast chan ledControlStop;
+broadcast chan ledControlStart;
+
+chan motionStart;
+chan motionDone;</declaration>
+	<template>
+		<name x="5" y="5">LEDPuzzle</name>
+		<declaration>// Place local declarations here.
+
+clock x;</declaration>
+		<location id="id0" x="-297" y="-246">
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-442" y="-280">sw7 = !sw7</label>
+			<nail x="-365" y="-255"/>
+			<nail x="-365" y="-306"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-442" y="-229">sw6 = !sw6</label>
+			<nail x="-365" y="-187"/>
+			<nail x="-365" y="-238"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-382" y="-178">sw5 = !sw5</label>
+			<nail x="-306" y="-178"/>
+			<nail x="-357" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-289" y="-178">sw4 = !sw4</label>
+			<nail x="-238" y="-178"/>
+			<nail x="-289" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-229" y="-229">sw3 = !sw3</label>
+			<nail x="-229" y="-238"/>
+			<nail x="-229" y="-187"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-229" y="-280">sw2 = !sw2</label>
+			<nail x="-229" y="-306"/>
+			<nail x="-229" y="-255"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-289" y="-331">sw1 = !sw1</label>
+			<nail x="-289" y="-314"/>
+			<nail x="-238" y="-314"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-382" y="-331">sw0 = !sw0</label>
+			<nail x="-357" y="-314"/>
+			<nail x="-306" y="-314"/>
+		</transition>
+	</template>
+	<template>
+		<name>Finish</name>
+		<declaration>int num = 0;
+clock x;</declaration>
+		<location id="id1" x="17" y="-238">
+		</location>
+		<location id="id2" x="17" y="-76">
+		</location>
+		<location id="id3" x="-153" y="-238">
+			<name x="-204" y="-255">Finish</name>
+		</location>
+		<location id="id4" x="-153" y="-76">
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-119" y="-59">num &gt;= 5</label>
+			<label kind="synchronisation" x="-119" y="-76">ledControlStart!</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="34" y="-136">motionDone?</label>
+			<label kind="assignment" x="34" y="-119">num = num + 1,
+x = 0</label>
+			<nail x="42" y="-161"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-119" y="-221">num &lt; 5 &amp;&amp; x &gt; 10</label>
+			<label kind="synchronisation" x="-119" y="-238">motionStart!</label>
+			<nail x="-8" y="-161"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-76" y="-195">x &lt; 100</label>
+			<label kind="assignment" x="-76" y="-178">x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-246" y="-221">led0 == 0 &amp;&amp;
+led1 == 0 &amp;&amp;
+led2 == 0 &amp;&amp;
+led3 == 0 &amp;&amp;
+led4 == 0 &amp;&amp;
+led5 == 0 &amp;&amp;
+led6 == 0 &amp;&amp;
+led7 == 0</label>
+			<label kind="synchronisation" x="-144" y="-136">ledControlStop!</label>
+			<label kind="assignment" x="-144" y="-119">num = 0,
+x = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>FinishMotion</name>
+		<declaration>clock x;</declaration>
+		<location id="id5" x="76" y="76">
+		</location>
+		<location id="id6" x="153" y="0">
+		</location>
+		<location id="id7" x="153" y="-93">
+		</location>
+		<location id="id8" x="0" y="-93">
+		</location>
+		<location id="id9" x="0" y="0">
+		</location>
+		<init ref="id9"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-42" y="25">x &gt; 10</label>
+			<label kind="synchronisation" x="-42" y="42">motionDone!</label>
+			<label kind="assignment" x="-42" y="59">led0 = 0,
+led7 = 0,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="guard" x="127" y="25">x &gt; 10</label>
+			<label kind="assignment" x="127" y="42">led1 = 0,
+led6 = 0,
+led0 = 1,
+led7 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="guard" x="170" y="-102">x &gt; 10</label>
+			<label kind="assignment" x="170" y="-85">led2 = 0,
+led5 = 0,
+led1 = 1,
+led6 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="guard" x="42" y="-195">x &gt; 10</label>
+			<label kind="assignment" x="42" y="-178">led3 = 0,
+led4 = 0,
+led2 = 1,
+led5 = 1,
+x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-93" y="-76">motionStart?</label>
+			<label kind="assignment" x="-68" y="-59">led3 = 1,
+led4 = 1,
+x = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>SW0</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id10" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id11" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-238" y="-170">psw != sw0</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW0!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw0</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>SW1</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id12" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id13" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id13"/>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-238" y="-170">psw != sw1</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW1!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw1</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>SW2</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id14" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id15" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id15"/>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-238" y="-170">psw != sw2</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW2!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw2</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>SW3</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id16" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id17" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id17"/>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-238" y="-170">psw != sw3</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW3!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw3</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>SW4</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id18" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id19" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id19"/>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id19"/>
+			<label kind="guard" x="-238" y="-170">psw != sw4</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW4!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw4</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>SW5</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id20" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id21" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id21"/>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id21"/>
+			<label kind="guard" x="-238" y="-170">psw != sw5</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW5!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw5</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>SW6</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id22" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id23" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id23"/>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id23"/>
+			<label kind="guard" x="-238" y="-170">psw != sw6</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW6!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw6</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>SW7</name>
+		<declaration>int psw = 0;</declaration>
+		<location id="id24" x="-161" y="34">
+			<name x="-144" y="25">Disabled</name>
+		</location>
+		<location id="id25" x="-161" y="-68">
+			<name x="-144" y="-76">Enabled</name>
+		</location>
+		<init ref="id25"/>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-297" y="-51">ledControlStart?</label>
+			<nail x="-204" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-127" y="0">ledControlStop?</label>
+			<nail x="-119" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id25"/>
+			<label kind="guard" x="-238" y="-170">psw != sw7</label>
+			<label kind="synchronisation" x="-153" y="-153">toggleSW7!</label>
+			<label kind="assignment" x="-238" y="-153">psw = sw7</label>
+			<nail x="-204" y="-128"/>
+			<nail x="-119" y="-128"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED0</name>
+		<location id="id26" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id27" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id26"/>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW2?</label>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id26"/>
+			<label kind="assignment" x="-204" y="-187">led0 = !led0</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW3?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW0?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED1</name>
+		<location id="id28" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id29" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id28"/>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW3?</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id28"/>
+			<label kind="assignment" x="-204" y="-187">led1 = !led1</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW6?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW1?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED2</name>
+		<location id="id30" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id31" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id30"/>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW3?</label>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id30"/>
+			<label kind="assignment" x="-204" y="-187">led2 = !led2</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW5?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW0?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED3</name>
+		<location id="id32" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id33" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id32"/>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW6?</label>
+			<nail x="-246" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW3?</label>
+			<nail x="-263" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id32"/>
+			<label kind="assignment" x="-204" y="-187">led3 = !led3</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="-357" y="-178">toggleSW7?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW0?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED4</name>
+		<location id="id34" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id35" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id34"/>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW2?</label>
+		</transition>
+		<transition>
+			<source ref="id35"/>
+			<target ref="id34"/>
+			<label kind="assignment" x="-204" y="-187">led4 = !led4</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW4?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW0?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED5</name>
+		<location id="id36" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id37" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id36"/>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW6?</label>
+		</transition>
+		<transition>
+			<source ref="id37"/>
+			<target ref="id36"/>
+			<label kind="assignment" x="-204" y="-187">led5 = !led5</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW7?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW1?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED6</name>
+		<location id="id38" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id39" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id38"/>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW4?</label>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id38"/>
+			<label kind="assignment" x="-204" y="-187">led6 = !led6</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW7?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW1?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<template>
+		<name>LED7</name>
+		<location id="id40" x="-255" y="-127">
+			<name x="-280" y="-136">S</name>
+		</location>
+		<location id="id41" x="-255" y="-229">
+			<committed/>
+		</location>
+		<init ref="id40"/>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="-357" y="-195">toggleSW6?</label>
+			<nail x="-246" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="-357" y="-212">toggleSW5?</label>
+			<nail x="-263" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id41"/>
+			<target ref="id40"/>
+			<label kind="assignment" x="-204" y="-187">led7 = !led7</label>
+			<nail x="-212" y="-229"/>
+			<nail x="-212" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="-357" y="-178">toggleSW7?</label>
+			<nail x="-229" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="-357" y="-229">toggleSW4?</label>
+			<nail x="-280" y="-178"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+/*
+ * Since the template parameter is not yet supported by UPPAAL2PLC,
+ * each template is defined for each LEDs and switchs.
+ */
+
+LedPuzzle = LEDPuzzle();
+
+finish = Finish();
+finishMotion = FinishMotion();
+
+Sw0 = SW0();
+Sw1 = SW1();
+Sw2 = SW2();
+Sw3 = SW3();
+Sw4 = SW4();
+Sw5 = SW5();
+Sw6 = SW6();
+Sw7 = SW7();
+
+Led0 = LED0();
+Led1 = LED1();
+Led2 = LED2();
+Led3 = LED3();
+Led4 = LED4();
+Led5 = LED5();
+Led6 = LED6();
+Led7 = LED7();
+// List one or more processes to be composed into a system.
+system LedPuzzle, finish, finishMotion, Sw0, Sw1, Sw2, Sw3, Sw4, Sw5, Sw6, Sw7, Led0, Led1, Led2, Led3, Led4, Led5, Led6, Led7;</system>
+	<queries>
+		<query>
+			<formula>A[] not finish.Finish
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] (Led0.S and Led1.S and Led2.S and Led3.S and Led4.S and Led5.S and Led6.S and Led7.S) imply (not (led0 == 0 and led1 == 0 and led2 == 0 and led3 == 0 and led4 == 0 and led5 == 0 and led6 == 0 and led7 == 0))
+			</formula>
+			<comment>
+			</comment>
+		</query>
+	</queries>
+</nta>

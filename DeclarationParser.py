@@ -1,6 +1,6 @@
 attributeKeywords = ["broadcast", "urgent", "const"]
 typeKeywords = ["int", "bool", "chan", "clock"]
-doubleOperators = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", ">=", "<=", "==", "&&", "||", "++", "--"]
+doubleOperators = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", ">=", "<=", "==", "!=", "&&", "||", "++", "--"]
 singleOperators = ["=", "+", "-", "*", "/", "%", "&", "|", "^", ">", "<", "!", "(", ")", "{", "}", ",", ";"]
 
 def parseDeclaration(text) :
