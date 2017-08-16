@@ -518,7 +518,7 @@ system user, finish, finishMotion, Sw0, Sw1, Sw2, Sw3, Sw4, Sw5, Sw6, Sw7;</syst
 		<query>
 			<formula>A[] not finish.Finish
 			</formula>
-			<comment>If you check the trace that does not satisfy this query through the diagonistic tree, you can see the combination of the switches that all the LEDs turn off.
+			<comment>If you check the trace that does not satisfy this query through the diagnostic tree, you can see the combination of the switches that all the LEDs turn off.
 Solution : SW1, SW3, SW4, SW6, SW7
 			</comment>
 		</query>
