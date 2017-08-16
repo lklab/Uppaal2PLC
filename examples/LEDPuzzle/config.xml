@@ -17,14 +17,6 @@
 		<task type="SW5" />
 		<task type="SW6" />
 		<task type="SW7" />
-		<task type="LED0" />
-		<task type="LED1" />
-		<task type="LED2" />
-		<task type="LED3" />
-		<task type="LED4" />
-		<task type="LED5" />
-		<task type="LED6" />
-		<task type="LED7" />
 		<io varname="led0" address="1:0x7010:0x1" type="bool" direction="out" />
 		<io varname="led1" address="1:0x7010:0x2" type="bool" direction="out" />
 		<io varname="led2" address="1:0x7010:0x3" type="bool" direction="out" />
