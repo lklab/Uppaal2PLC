@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, shutil
+import sys, os, platform, shutil
 
 from UppaalProjectParser import *
 from ConfigParser import *
@@ -52,7 +52,7 @@ print("Model code(model.[ch]) is generated in resources directory.")
 
 # automatic build
 print("Automatic build start.")
-if os.uname()[0] == "Linux" :
+if platform.system() == "Linux" :
 	os.chdir(resourceDirectory)
 	success = os.system("make OS=" + configData["os"].upper() + " PROTO=" + configData["protocol"].upper())
 	if success is not 0 :

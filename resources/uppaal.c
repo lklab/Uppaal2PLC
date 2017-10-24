@@ -6,7 +6,7 @@
 static int committed_location_processing();
 static int normal_location_processing();
 
-static int take_vaild_transition(Template* task);
+static int take_valid_transition(Template* task);
 
 static int check_and_take_broadcast_channel(Template* send_task, Transition* send_transition);
 static int find_sending_broadcast_and_take(Template* receive_task, Transition* receive_transition);
@@ -85,7 +85,7 @@ static int committed_location_processing()
 
 			if(task -> current -> mode == LOCATION_COMMITTED)
 			{
-				state_changed |= take_vaild_transition(task);
+				state_changed |= take_valid_transition(task);
 				all_committed_proceeded = 0;
 			}
 		}
@@ -104,14 +104,14 @@ static int normal_location_processing()
 
 	for(i = 0; program.tasks[i] != NULL; i++)
 	{
-		if(take_vaild_transition(program.tasks[i]))
+		if(take_valid_transition(program.tasks[i]))
 			return 1;
 	}
 
 	return 0;
 }
 
-static int take_vaild_transition(Template* task)
+static int take_valid_transition(Template* task)
 {
 	int i;
 

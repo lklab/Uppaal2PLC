@@ -20,7 +20,6 @@ typedef struct MappingInfo
 	int direction;
 } MappingInfo;
 
-int exchangeData();
 int userPeriodicFunc();
 
 extern Program program;
